@@ -1,0 +1,8 @@
+tk==0.1.0
+customtkinter==5.1.2
+numpy==1.24.2
+pandas==2.0.0
+mediapipe==0.9.3.0
+opencv-contrib-python==4.7.0.72
+opencv-python==4.7.0.72
+Pillow==9.5.0
