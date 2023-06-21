@@ -1,3 +1,4 @@
+import time
 import cv2
 import mediapipe as mp
 import Mediapipe.mediapipe_helper as mh
@@ -16,7 +17,7 @@ def detect(filename: str=None):
 	match (gl.get_state()):
 		case "mp_live": 			
 			cap = cv2.VideoCapture(0)	
-			output_path = str(path) + "\\output\\live.txt"
+			output_path = str(path) + "\\output\\"+str(time.time())+"_live"
 			writer.clear_file(output_path)
 			while cap.isOpened() and gl.get_state() == "mp_live":
 				process(cap, output_path)
@@ -25,7 +26,7 @@ def detect(filename: str=None):
 		case "mp_image":
 			if (not filename): return
 			cap = cv2.VideoCapture(filename)
-			output_path = str(path) + "\\output\\image.txt"
+			output_path = str(path) + "\\output\\"+str(time.time())+"_image"
 			writer.clear_file(output_path)
 			process(cap, output_path)
 			cap.release()			
@@ -33,7 +34,7 @@ def detect(filename: str=None):
 		case "mp_video":
 			if (not filename): return 
 			cap = cv2.VideoCapture(filename)
-			output_path = str(path) + "\\output\\video.txt"
+			output_path = str(path) + "\\output\\"+str(time.time())+"_video"
 			writer.clear_file(output_path)
 			while cap.isOpened() and gl.get_state() == "mp_video":
 				process(cap, output_path)
@@ -48,5 +49,6 @@ def process(cap, filepath:str=None):
 	landmarks = results.pose_landmarks
 	if (landmarks is not None):
 		angles = mh.get_angles(landmarks.landmark)
-		writer.print_angles(angles, filepath)				
+		writer.print_angles(angles, filepath+"_angles")	
+		writer.print_landmarks(landmarks.landmark, filepath+"_landmarks")			
 		mh.show_angles(angles)
