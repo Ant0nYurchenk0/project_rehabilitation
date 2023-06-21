@@ -6,7 +6,7 @@ import Program.label_control as lc
 def main():
   root = tk.Tk()
   root.title('GymBro - testing')
-  root.geometry('x')
+  root.geometry('700x700')
   root_menu = tk.Menu(root)
   root.config(menu=root_menu)
 
