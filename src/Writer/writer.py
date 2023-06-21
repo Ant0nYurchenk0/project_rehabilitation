@@ -9,13 +9,16 @@ landmark_names = ['nose', 'left_eye_inner', 'left_eye', 'left_eye_outer',
                     'left_foot_index', 'right_foot_index']
 
 def print_landmarks(landmarks: list[str], filename: str)->None:
-  file_with_extension = filename+".csv"
+  if (filename is not None):
+    file_with_extension = filename+".csv"
+  else:
+    return
   output_file = open(file_with_extension, "a+")
   if os.stat(file_with_extension).st_size == 0:
     for i in range(len(landmark_names)):
-      output_file.write(','+ str(landmark_names[i])+', '+','+','+','+',')  
+      output_file.write(','+ str(landmark_names[i])+','*3)  
   for i in range(len(landmarks)):
-      output_file.write(','+ str(landmarks[i].x)+', '+str(landmarks[i].y)+','+str(landmarks[i].z)+',')
+      output_file.write(','+ str(landmarks[i].x)+','+str(landmarks[i].y)+','+str(landmarks[i].z)+',')
   output_file.write('\n')
 
 def print_angles(angles: dict[str, float], filename: str=None)->None:    
