@@ -20,20 +20,22 @@ def detect(filename: str=None):
 	output_path = filepath+str(time.time())+gl.get_state()
 	output_angles = output_path+"_angles"
 	output_landmarks = output_path+"_landmarks"
+	stored_landmarks = []
+	stored_angles = []
 	
 	match (gl.get_state()):
 		case "mp_live": 			
 			cap = cv2.VideoCapture(0)	
 			output_path = filepath+str(time.time())+"_live"
 			while cap.isOpened() and gl.get_state() == "mp_live":
-				process(cap, output_landmarks, output_angles)
+				process(cap, stored_landmarks, stored_angles)
 			cap.release()		
 			
 		case "mp_image":
 			if (not filename): return
 			cap = cv2.VideoCapture(filename)
 			output_path = filepath+str(time.time())+"_image"
-			process(cap, output_landmarks, output_angles)
+			process(cap, stored_landmarks, stored_angles)
 			cap.release()			
 		
 		case "mp_video":
@@ -41,10 +43,12 @@ def detect(filename: str=None):
 			cap = cv2.VideoCapture(filename)
 			output_path = filepath+str(time.time())+"_video"
 			while cap.isOpened() and gl.get_state() == "mp_video":
-				process(cap, output_landmarks, output_angles)
+				process(cap, stored_landmarks, stored_angles)
 			cap.release()
+			writer.print_landmarks_data_csv(stored_landmarks, output_landmarks)
+			writer.print_angles_data_csv(stored_angles, output_angles)
 					
-def process(cap, output_landmarks:str=None, output_angles:str=None):
+def process(cap, stored_landmarks:list=[], stored_angles:list=[]):
 	image, results = mh.read_frame(cap, pose, mp_drawing, mp_pose)		
 	if image is None: 
 		cap.release()	
@@ -52,7 +56,9 @@ def process(cap, output_landmarks:str=None, output_angles:str=None):
 	mh.show_frame(image)
 	landmarks = results.pose_landmarks
 	if (landmarks is not None):
+		stored_landmarks.append(landmarks.landmark)
 		angles = mh.get_angles(landmarks.landmark)
-		writer.print_angles(angles, output_angles)
-		writer.print_landmarks(landmarks.landmark, output_landmarks)
+		stored_angles.append(angles)
+		#writer.print_angles(angles, output_angles)
+		#writer.print_landmarks(landmarks.landmark, output_landmarks)
 		mh.show_angles(angles)
