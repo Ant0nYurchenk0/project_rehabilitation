@@ -33,6 +33,8 @@ def get_angles(landmarks)->dict[str, float]:
   angles["right_shoulder"]=m.calculate_angle(get_angle_points_list(angle.get_right_shoulder(), landmarks))
   angles["left_knee"]=m.calculate_angle(get_angle_points_list(angle.get_left_knee(), landmarks))
   angles["right_knee"]=m.calculate_angle(get_angle_points_list(angle.get_right_knee(), landmarks))
+  angles["right_hip"]=m.calculate_angle(get_angle_points_list(angle.get_right_hip(), landmarks))
+  angles["left_hip"]=m.calculate_angle(get_angle_points_list(angle.get_left_hip(), landmarks))
   return angles
 
 def show_angles(angles: dict[str, float]):
