@@ -1,4 +1,9 @@
-import os
+
+import csv
+from io import StringIO
+from xlsxwriter.workbook import Workbook
+import Tkinter.tkinter_functions as tf
+
 
 landmark_names = ['nose', 'left_eye_inner', 'left_eye', 'left_eye_outer',
                     'right_eye_inner', 'right_eye', 'right_eye_outer', 'left_ear', 
@@ -8,57 +13,35 @@ landmark_names = ['nose', 'left_eye_inner', 'left_eye', 'left_eye_outer',
                     'left_knee', 'right_knee', 'left_ankle', 'right_ankle', 'left_heel', 'right_heel',
                     'left_foot_index', 'right_foot_index']
 
-def print_landmarks(landmarks: list[str], filename: str)->None:
-  if (filename is not None):
-    file_with_extension = filename+".csv"
-  else:
-    return
-  output_file = open(file_with_extension, "a+")
-  if os.stat(file_with_extension).st_size == 0:
-    for i in range(len(landmark_names)):
-      output_file.write(','+ str(landmark_names[i])+','*3)  
-  for i in range(len(landmarks)):
-      output_file.write(','+ str(landmarks[i].x)+','+str(landmarks[i].y)+','+str(landmarks[i].z)+',')
-  output_file.write('\n')
-
-def print_angles(angles: dict[str, float], filename: str=None)->None:    
-  if (filename is not None):
-    output_file = open(filename+".csv", "a+")
-    write_func = output_file.write
-  else:
-     write_func = lambda content: print(content, end='')
-  for angle in angles: 
-    write_func(str(angle) + "," + str(angles[angle])+'\n')
-  write_func("\n")
-
-
-def print_landmarks_data_csv(landmarks_data: list[list[str]], filename: str="landmarks_output")->None:
-  if (filename is not None):
-    file_with_extension = filename+".csv"
-  else:
-    return
-  output_file = open(file_with_extension, "a+")
-  if os.stat(file_with_extension).st_size == 0:
-    for i in range(len(landmark_names)):
-      output_file.write(','+ str(landmark_names[i])+','*3)
+def get_landmarks_csv(landmarks_data: list[list[str]])->str:
+  result = ""
+  for i in range(len(landmark_names)):
+    result += ','+ str(landmark_names[i]) + ','*3
   for landmarks in landmarks_data:
-    output_file.write("\n")
+    result += "\n"
     for i in range(len(landmarks)):
-        output_file.write(','+ str(landmarks[i].x)+','+str(landmarks[i].y)+','+str(landmarks[i].z)+',')
-  output_file.close()
+      result += ','+ str(landmarks[i].x) + ','+str(landmarks[i].y) + ','+str(landmarks[i].z) + ','
+  return result
 
-def print_angles_data_csv(angles_data: list[dict[str, float]], filename: str="angles_output")->None:    
-  if (filename is not None):
-    output_file = open(filename+".csv", "a+")
-    write_func = output_file.write
-  else:
-     write_func = lambda content: print(content, end='')
+def get_angles_csv(angles_data: list[dict[str, float]])->str:   
+  result = ""
+  for angle in angles_data[0]:
+    result += ','+ str(angle) + ','
   for angles in angles_data:
+    result +="\n"
     for angle in angles: 
-      write_func(str(angle) + "," + str(angles[angle])+'\n')
-    write_func("\n")
-  output_file.close()
+      result +="," + str(angles[angle]) + ','
+  return result
 
-
-def clear_file(filename: str)->None:
-  open(filename, "w+")
+def write_csv_to_xlsx(texts:list[(str, str)], default_path:str, default_name: str)->None:
+  name = tf.save_file(default_path, default_name,"Excel Sheet", ['.xlsx'])  
+  workbook = Workbook(name)
+  for text in texts:
+    f = StringIO(text[1])
+    reader = csv.reader(f, delimiter=',')
+    worksheet = workbook.add_worksheet()
+    for r, row in enumerate(reader):
+      for c, col in enumerate(row):
+        worksheet.write(r, c, col)
+    worksheet.name = text[0]
+  workbook.close()

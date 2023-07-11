@@ -33,3 +33,15 @@ right_knee = [27, 25, 23]
 def get_right_knee()->list[int]:
     global right_knee
     return right_knee
+
+right_hip = [26, 24, 23]
+
+def get_right_hip()->list[int]:
+    global right_hip
+    return right_hip
+
+left_hip = [25, 23, 24]
+
+def get_left_hip()->list[int]:
+    global left_hip
+    return left_hip
