@@ -46,3 +46,12 @@ def get_angle_points_list(angle_config: list[int], landmarks)->list[list[float]]
   b = [landmarks[angle_config[1]].x,landmarks[angle_config[1]].y]
   c = [landmarks[angle_config[2]].x,landmarks[angle_config[2]].y]
   return [a, b, c]
+
+def get_video_duration(cap):
+    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    fps = int(cap.get(cv2.CAP_PROP_FPS))
+    duration_seconds = total_frames / fps
+    return duration_seconds
+
+def update_timers(start_time, elapsed_time, total_duration):
+  lc.update_timer_label("timer", start_time, elapsed_time, total_duration)
