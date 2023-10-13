@@ -1,4 +1,7 @@
 task_state= "none"
+start_time = None
+elapsed_time = None
+total_duration = None
 
 def set_state(new_state: str):
     global task_state
