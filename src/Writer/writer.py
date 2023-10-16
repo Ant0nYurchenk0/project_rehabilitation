@@ -33,15 +33,38 @@ def get_angles_csv(angles_data: list[dict[str, float]])->str:
       result +="," + str(angles[angle]) + ','
   return result
 
-def write_csv_to_xlsx(texts:list[(str, str)], default_path:str, default_name: str)->None:
-  name = tf.save_file(default_path, default_name,"Excel Sheet", ['.xlsx'])  
-  workbook = Workbook(name)
-  for text in texts:
-    f = StringIO(text[1])
-    reader = csv.reader(f, delimiter=',')
-    worksheet = workbook.add_worksheet()
-    for r, row in enumerate(reader):
-      for c, col in enumerate(row):
-        worksheet.write(r, c, col)
-    worksheet.name = text[0]
-  workbook.close()
+from datetime import datetime
+def get_timestamps_csv(timestamps_data: list[float]) -> str:
+    result = "Timestamp\n"
+    for timestamp in timestamps_data:
+        formatted_time = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S.%f')
+        result += formatted_time + "\n"
+    return result
+
+
+def write_csv_to_xlsx(texts: list[(str, str)], default_path: str, default_name: str) -> None:
+    name = tf.save_file(default_path, default_name, "Excel Sheet", ['.xlsx'])
+    workbook = Workbook(name)
+
+    for text in texts:
+        f = StringIO(text[1])
+        reader = csv.reader(f, delimiter=',')
+        worksheet = workbook.add_worksheet()
+        if text[0] == 'Timestamp':
+            # If it's timestamps, write them as the first column
+            data = [float(row[0]) for row in reader]
+            worksheet.write_column('A1', data)
+        else:
+            # Otherwise, write data as usual
+            for r, row in enumerate(reader):
+                for c, col in enumerate(row):
+                    try: 
+                      value = float(col)
+                      worksheet.write_number(r,c,value)
+                    except:
+                      worksheet.write(r, c, col)
+
+        worksheet.name = text[0]
+
+    workbook.close()
+

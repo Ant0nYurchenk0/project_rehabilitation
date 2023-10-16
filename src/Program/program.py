@@ -2,7 +2,7 @@ import tkinter as tk
 import Tkinter.tkinter_helper as th
 import Tkinter.tkinter_functions as tf
 import Program.label_control as lc
-
+import Program.globalv as gl
 def main():
   root = tk.Tk()
   root.title('GymBro - testing')
@@ -44,6 +44,10 @@ def main():
   mediapipe_menu = th.add_menu(root_menu, "Mediapipe")
   th.add_command_to_menu(mediapipe_menu, "Live Video", lambda: tf.start_mediapipe_live_video())
   th.add_command_to_menu(mediapipe_menu, "From file", lambda: tf.start_mediapipe_from_file())
+
+  timer_label = tk.Label(root, text='00:00:00 / 00:00:00')
+  timer_label.pack(anchor='ne')
+  lc.add_label("timer", timer_label)
 
   root.mainloop()
 
