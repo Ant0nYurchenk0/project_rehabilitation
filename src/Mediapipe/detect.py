@@ -72,11 +72,12 @@ def process(cap, stored_landmarks: list = [], stored_angles: list = [], stored_t
     image = cv2.flip(image,1)
     
     # Get the current timestamp
-    timestamp = time.time()
     global frame_count
     global total_frames
     frame_count += 1
-
+    elapsed_time = 0
+    elapsed_seconds=0
+    elapsed_microseconds =0
     # Calculate the elapsed time as a fraction of total duration based on frame count
     if gl.total_duration and frame_count > 1:
         elapsed_time = gl.total_duration * frame_count / total_frames
@@ -112,7 +113,7 @@ def process(cap, stored_landmarks: list = [], stored_angles: list = [], stored_t
     landmarks = results.pose_landmarks
     if landmarks is not None:
         # Add the timestamp to the stored timestamps
-        stored_timestamps.append(timestamp)
+        stored_timestamps.append(f"{elapsed_seconds}:{str(elapsed_microseconds)[:2]}")
         # Add the landmarks data
         stored_landmarks.append(landmarks.landmark)
         angles = mh.get_angles(landmarks.landmark)
