@@ -17,7 +17,6 @@ def read_frame(cap, pose, mp_drawing, mp_pose):
   return (image, results)
 
 def show_frame(image):
-  image = cv2.flip(image,1)
   img = image[:, :, :] 
   imgarr = Image.fromarray(img) 
   aspect_ratio = imgarr.width/imgarr.height

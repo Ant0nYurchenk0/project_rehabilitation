@@ -3,7 +3,7 @@ import csv
 from io import StringIO
 from xlsxwriter.workbook import Workbook
 import Tkinter.tkinter_functions as tf
-
+import cv2
 
 landmark_names = ['nose', 'left_eye_inner', 'left_eye', 'left_eye_outer',
                     'right_eye_inner', 'right_eye', 'right_eye_outer', 'left_ear', 
@@ -44,6 +44,8 @@ def get_timestamps_csv(timestamps_data: list[float]) -> str:
 
 def write_csv_to_xlsx(texts: list[(str, str)], default_path: str, default_name: str) -> None:
     name = tf.save_file(default_path, default_name, "Excel Sheet", ['.xlsx'])
+    if name == '': return 
+
     workbook = Workbook(name)
 
     for text in texts:
@@ -68,3 +70,29 @@ def write_csv_to_xlsx(texts: list[(str, str)], default_path: str, default_name: 
 
     workbook.close()
 
+def output_video(frames: [], default_path: str, default_name: str):
+  if len(frames) == 0:
+    return
+  elif len(frames) == 1:
+    file_format = '.jpg'
+    file_type = 'Image'
+    func = write_image
+  elif len(frames) > 1:
+    file_format = '.mp4'
+    file_type = 'Video'
+    func = write_video
+
+  name = tf.save_file(default_path, default_name, file_type, [file_format])
+
+  if name == '': return
+
+  func(name, frames)
+
+def write_image(path, frames):
+   cv2.imwrite(path, frames[0]) 
+
+def write_video(path, frames):
+  height, width, _ = frames[0].shape
+  out = cv2.VideoWriter(path, cv2.VideoWriter_fourcc(*'DIVX'), 24, (width, height))
+  [out.write(f) for f in frames]
+  out.release()
