@@ -4,6 +4,7 @@ from io import StringIO
 from xlsxwriter.workbook import Workbook
 import Tkinter.tkinter_functions as tf
 import cv2
+from datetime import datetime
 
 landmark_names = ['nose', 'left_eye_inner', 'left_eye', 'left_eye_outer',
                     'right_eye_inner', 'right_eye', 'right_eye_outer', 'left_ear', 
@@ -33,11 +34,10 @@ def get_angles_csv(angles_data: list[dict[str, float]])->str:
       result +="," + str(angles[angle]) + ','
   return result
 
-from datetime import datetime
-def get_timestamps_csv(timestamps_data: list[float]) -> str:
+def get_timestamps_csv(timestamps_data: list[str]) -> str:
     result = "Timestamp\n"
     for timestamp in timestamps_data:
-        formatted_time = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S.%f')
+        formatted_time = timestamp
         result += formatted_time + "\n"
     return result
 
